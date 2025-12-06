@@ -1,14 +1,16 @@
-<center>
-  <img alt="Samuel L. Zombee" src=".github/images/zombee.png" width="150" />
-</center>
+<p align="center">
+<a href="https://github.com/moldypenguins/Zombee">
+<img alt="Samuel L. Zombee" src=".github/images/zombee.png" width="150"></center>
+</a>
+</p>
 
-<center>
-  <h1>Samuel L. Zombee</h1>
-</center>
+<h1 align="center">Samuel L. Zombee</h1></center>
 
-<center>
-  <img alt="The Old Republic" src="https://i.imgur.com/TUnLBzZ.png" width="400" />
-</center>
+<p align="center">
+<a href="https://theoldrepublic.ovh">
+<img alt="The Old Republic" src="https://i.imgur.com/TUnLBzZ.png" width="400">
+</a>
+</p>
 
 ***  
 [![License](https://img.shields.io/github/license/moldypenguins/Zombee?logo=GNU&style=for-the-badge&color=BD0000)][github-href]
@@ -24,7 +26,9 @@
 
 ## Contact
 
-<img alt="TOR Discord" src="https://i.imgur.com/c8bSPJJ.png" />
+<a href="https://theoldrepublic.ovh">
+<img alt="TOR Discord" src="https://i.imgur.com/c8bSPJJ.png">
+</a>
 
 ## Author
 _**Craig Roberts**_  
