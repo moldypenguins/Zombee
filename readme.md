@@ -1,8 +1,14 @@
-<center><img alt="Samuel L. Zombee" src=".github/images/zombee.png" width="150" /></center>
+<center>
+  <img alt="Samuel L. Zombee" src=".github/images/zombee.png" width="150" />
+</center>
 
-<center><h1>Samuel L. Zombee</h1></center>
+<center>
+  <h1>Samuel L. Zombee</h1>
+</center>
 
-<center><img alt="The Old Republic" src="https://i.imgur.com/TUnLBzZ.png" width="400" /></center>
+<center>
+  <img alt="The Old Republic" src="https://i.imgur.com/TUnLBzZ.png" width="400" />
+</center>
 
 ***  
 [![License](https://img.shields.io/github/license/moldypenguins/Zombee?logo=GNU&style=for-the-badge&color=BD0000)][github-href]
