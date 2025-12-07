@@ -1,15 +1,15 @@
 {
   "folders": [
     {
-      "path": "."
-    }
+      "path": ".",
+    },
   ],
   "settings": {
     "files.associations": {
       "*.xml": "xml",
       "*.bbc.txt": "bbcode",
       "*.c": "enscript",
-      "*.cpp": "enscript"
+      "*.cpp": "enscript",
     },
     "editor.detectIndentation": false,
     "editor.insertSpaces": true,
@@ -18,20 +18,22 @@
     "editor.formatOnSave": true,
     "editor.trimAutoWhitespace": true,
     "editor.rulers": [120],
+    "prettier.printWidth": 120,
+    "prettier.requireConfig": false,
     "[xml]": {
-      "editor.defaultFormatter": "DotJoshJohnson.xml"
+      "editor.defaultFormatter": "DotJoshJohnson.xml",
     },
-    "[json][jsonc]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "[js][json][jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
     },
     "[c][cpp]": {
       "editor.formatOnSave": false,
       "editor.defaultFormatter": "yuval.enfusion-script",
       "editor.wordBasedSuggestions": "off",
-      "editor.semanticHighlighting.enabled": false
+      "editor.semanticHighlighting.enabled": false,
     },
     "github.copilot.enable": {
-      "*": false
-    }
-  }
+      "*": false,
+    },
+  },
 }

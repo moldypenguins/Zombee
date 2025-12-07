@@ -14,7 +14,11 @@
     "npm": ">=9.5.0"
   },
   "exports": "./Zombee.js",
-  "scripts": { "start": "node ./Zombee.js" },
+  "scripts": { 
+    "dev": "node ./Zombee.js",
+    "reg": "node ./Zombee.js -r",
+    "start": "nodemon ./Zombee.js"
+  },
   "dependencies": {
     "axios": "^1.13.2",
     "battleye-node": "^0.9.7",
@@ -26,18 +30,12 @@
     "minimist": "^1.2.8",
     "moment": "^2.30.1",
     "moment-timezone": "^0.6.0",
+    "nodemon": "^3.1.11",
     "numeral": "^2.0.6",
     "parse-duration": "^2.1.4"
   },
   "devDependencies": {
     "debug": "^4.4.3",
-    "eslint": "^9.39.1",
-    "eslint-config-node": "^4.1.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-jsdoc": "^61.4.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^5.5.4",
-    "nodemon": "^3.1.11",
     "prettier": "^3.7.4"
   }
 }
