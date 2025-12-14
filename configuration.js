@@ -1,14 +1,17 @@
 "use strict";
+import { FileUploadAssertions } from "discord.js";
 /**
  * @name Configuration.js
  * @version 2025-12-05
  * @summary The Old Republic
  **/
 
-import "dotenv/config";
 //import util from "util";
+import dotenv from "dotenv";
+import dotenvExpand from "dotenv-expand";
+dotenvExpand.expand(dotenv.config({ path: [".env", ".env.mods"] }));
 
-function getConfig() {
+const config = () => {
   const configuration = {
     discord: {
       token: process.env.DISCORD_TOKEN,
@@ -26,7 +29,20 @@ function getConfig() {
       chat: process.env.CHANNELS_CHAT,
       status: process.env.CHANNELS_STATUS,
     },
+    steam: {
+      api_key: process.env.STEAM_APIKEY,
+    },
+    modpacks: {},
   };
+
+  // update configuration for process.env.["MODPACK_*"]
+  let keys = Object.keys(process.env).filter((k) => k.startsWith("MODPACK_"));
+  if (keys?.length > 0) {
+    for (const k of keys) {
+      configuration.modpacks[k.replace("MODPACK_", "")] = process.env[k] ? process.env[k].split(",") : [];
+      delete process.env[k];
+    }
+  }
 
   //console.log(`CONFIG: ${util.inspect(configuration, true, null, true)}`);
 
@@ -47,7 +63,6 @@ function getConfig() {
   }
 
   return configuration;
-}
+};
 
-const config = getConfig();
-export default config;
+export default config();

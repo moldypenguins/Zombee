@@ -5,6 +5,7 @@
  * @summary The Old Republic
  **/
 
+//import util from "util";
 import {
   ActivityType,
   Client,
@@ -27,6 +28,9 @@ import {
 
 import minimist from "minimist";
 import RCON from "battleye-node";
+
+import { ToadScheduler, SimpleIntervalJob, AsyncTask } from "toad-scheduler";
+let Scheduler = new ToadScheduler();
 
 import config from "./configuration.js";
 import commands from "./commands.js";
@@ -144,6 +148,82 @@ client.on(Events.ClientReady, async () => {
     status: await client.channels.fetch(config.channels.status).catch(() => null),
   };
 
+  // http://api.steampowered.com/<interface name>/<method name>/v<version>/?key=<api key>&format=json
+  /**
+   * Retrieves detailed information for specified Steam Workshop mod IDs
+   * @param {Array<string|number>} ids - Array of published file IDs to query
+   * @returns {Promise<Object>} Parsed JSON response from Steam API
+   */
+  const getModDetails = async (ids) => {
+    let url = `https://api.steampowered.com/IPublishedFileService/GetDetails/v1/?key=${config.steam.api_key}&format=json&includevotes=true`;
+    for (let i = 0; i < ids.length; i++) {
+      url += `&publishedfileids[${i}]=${ids[i]}`;
+    }
+    const req = await fetch(url);
+    if (req.status === 200 && req.statusText === "OK" && req.body) {
+      const reader = req.body.getReader();
+      const chunks = [];
+      let done, value;
+      while (!done) {
+        ({ done, value } = await reader.read());
+        if (value) chunks.push(value);
+      }
+      const buffer = Buffer.concat(chunks);
+      return JSON.parse(buffer.toString());
+    }
+    return;
+  };
+
+  const modpacks_task = new AsyncTask("ModPacksTask", async () => {
+    console.log("[ModPacksJob]<ModPacksTask>: Started.");
+    //console.log(`CONFIG: ${util.inspect(config.modpacks, true, null, true)}`);
+
+    // iterate through mod packs
+    for (const pack of Object.keys(config.modpacks)) {
+      const mods = config.modpacks[pack];
+      if (config.modpacks[pack]?.length > 0) {
+        // get details for pack
+        const pd = await getModDetails([pack]);
+        //console.log(`PACK: ${util.inspect(pd.response.publishedfiledetails, true, null, true)}`);
+        if (pd?.response?.publishedfiledetails?.length == 1) {
+          const pack_details = pd.response.publishedfiledetails[0];
+          // get details for pack mods
+          const md = await getModDetails(mods);
+          if (md?.response?.publishedfiledetails?.length >= 1) {
+            const mods_details = md.response.publishedfiledetails;
+            for (let j = 0; j < mods_details.length; j++) {
+              //console.log(`PACK: ${pack_details.time_updated} <> MOD: ${mods_details[j].time_updated}`);
+              if (pack_details.time_updated < mods_details[j].time_updated) {
+                // alert - mod is more recent than pack
+                console.log(
+                  `[ModPacksJob]<ModPacksTask>: A mod has been updated in ${pack_details.title} - MOD: ${mods_details[j].title}`
+                );
+                if (_channels.logs) {
+                  const alertEmbed = new EmbedBuilder()
+                    .setColor("#FF9900")
+                    .setAuthor({ name: "Repacked Mod Update", iconURL: "https://i.imgur.com/wZ1xLrf.png" })
+                    .setDescription(
+                      `A mod has been updated in [${pack_details.title}](https://steamcommunity.com/sharedfiles/filedetails/?id=${pack_details.publishedfileid})` +
+                        `\n- MOD: [${mods_details[j].title}](https://steamcommunity.com/sharedfiles/filedetails/?id=${mods_details[j].publishedfileid})`
+                    );
+                  await _channels.logs.send({ embeds: [alertEmbed] });
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    console.log("[ModPacksJob]<ModPacksTask>: Completed.");
+  });
+
+  Scheduler.addSimpleIntervalJob(
+    new SimpleIntervalJob({ hours: 12, runImmediately: true }, modpacks_task, {
+      id: "ModPacksJob",
+      preventOverrun: true,
+    })
+  );
+
   // Set connected presence
   battleye.on("onConnect", (isConnected) => {
     console.log("BattleEye Connected: ", isConnected);
@@ -215,8 +295,8 @@ client.on(Events.ClientReady, async () => {
     // detect in-game chat messages and send them to global Discord channel
     if (msg.includes("(Global)") && _channels.chat) {
       // parse chat message
-      const chat = null;
-      let s = (line || "").replace(/^.*BattlEye Server:\s*/i, "").trim();
+      const chat = _channels.chat;
+      let s = (msg || "").replace(/^.*BattlEye Server:\s*/i, "").trim();
       if (
         /^Player\s+#\d+\s+/i.test(s) ||
         /^\d{2}:\d{2}:\d{2}\s+Player\s+/i.test(s) ||
